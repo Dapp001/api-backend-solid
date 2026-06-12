@@ -84,6 +84,7 @@ jobs:
         run: |
           gcloud builds submit \
             --tag $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY/$IMAGE_NAME:latest \
+            --async \
             --suppress-logs
 
       - name: Deploy to Cloud Run
