@@ -27,3 +27,8 @@
   "password": "123456",
   "rol": "USER"
 }
+
+craq_api_data_pass
+ApiBackend2026$
+
+https://api-backend-solid-5vjoa6gwra-uc.a.run.app/

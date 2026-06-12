@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_api_backend_solid
+    restart: always
+    environment:
+      POSTGRES_DB: api_backend_solid
+      POSTGRES_USER: api_user
+      POSTGRES_PASSWORD: root123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_api_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_api_data:

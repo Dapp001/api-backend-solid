@@ -4,3 +4,6 @@ npm-debug.log
 .git
 .gitignore
 uploads
+terraform
+.github
+gcp-sa-key.json

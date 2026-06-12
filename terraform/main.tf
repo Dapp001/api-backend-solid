@@ -153,6 +153,11 @@ resource "google_cloud_run_v2_service" "api" {
       }
 
       env {
+        name  = "JWT_EXPIRES_IN"
+        value = "1h"
+      }
+
+      env {
         name = "DATABASE_URL"
 
         value_source {
