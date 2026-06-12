@@ -1,0 +1,29 @@
+1. POST /api/auth/register
+2. POST /api/auth/login
+3. GET /api/usuarios
+4. GET /api/usuarios/1
+5. POST /api/usuarios
+6. PUT /api/usuarios/2
+7. DELETE /api/usuarios/2
+8. GET /api/usuarios
+
+{
+  "nombre": "Dariel",
+  "apellido": "Perez",
+  "correo": "dariel@test.com",
+  "password": "123456",
+  "rol": "ADMIN"
+}
+
+{
+  "correo": "dariel@test.com",
+  "password": "123456"
+}
+
+{
+  "nombre": "Carlos",
+  "apellido": "Martinez",
+  "correo": "carlos@test.com",
+  "password": "123456",
+  "rol": "USER"
+}
