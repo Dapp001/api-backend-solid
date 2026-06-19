@@ -49,6 +49,17 @@ jobs:
         run: |
           docker push $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY/$IMAGE_NAME:latest
 
+      - name: Build Docker image notification-cloud-run
+        run: |
+          docker build \
+            --platform linux/amd64 \
+            -t $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY/notification-cloud-run:latest \
+            ./notification-cloud-run
+
+      - name: Push Docker image notification-cloud-run
+        run: |
+          docker push $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY/notification-cloud-run:latest
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
@@ -68,6 +79,8 @@ jobs:
             -var="region=$REGION" \
             -var="db_password=${{ secrets.DB_PASSWORD }}" \
             -var="jwt_secret=${{ secrets.JWT_SECRET }}" \
+            -var="smtp_email=${{ secrets.SMTP_EMAIL }}" \
+            -var="smtp_password=${{ secrets.SMTP_PASSWORD }}" \
             -var="image_url=$REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY/$IMAGE_NAME:latest"
 
       - name: Terraform Apply
@@ -78,6 +91,8 @@ jobs:
             -var="region=$REGION" \
             -var="db_password=${{ secrets.DB_PASSWORD }}" \
             -var="jwt_secret=${{ secrets.JWT_SECRET }}" \
+            -var="smtp_email=${{ secrets.SMTP_EMAIL }}" \
+            -var="smtp_password=${{ secrets.SMTP_PASSWORD }}" \
             -var="image_url=$REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY/$IMAGE_NAME:latest"
 
       - name: Submit build with Cloud Build

@@ -55,3 +55,26 @@ variable "image_url" {
   description = "URL de la imagen Docker en Artifact Registry"
   type        = string
 }
+
+variable "notification_service_name" {
+  description = "Nombre del Cloud Run de notificaciones"
+  type        = string
+  default     = "notification-cloud-run"
+}
+
+variable "pubsub_topic_name" {
+  description = "Nombre del topic Pub/Sub"
+  type        = string
+  default     = "email-notifications"
+}
+
+variable "smtp_email" {
+  description = "Correo SMTP"
+  type        = string
+}
+
+variable "smtp_password" {
+  description = "Password SMTP"
+  type        = string
+  sensitive   = true
+}

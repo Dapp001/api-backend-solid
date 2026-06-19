@@ -22,3 +22,13 @@ output "uploads_bucket" {
   description = "Bucket opcional para archivos"
   value       = google_storage_bucket.uploads_bucket.name
 }
+
+output "notification_service_url" {
+  description = "URL del Cloud Run de notificaciones"
+  value       = google_cloud_run_v2_service.notification_service.uri
+}
+
+output "pubsub_topic_id" {
+  description = "ID del topic Pub/Sub"
+  value       = google_pubsub_topic.email_topic.id
+}

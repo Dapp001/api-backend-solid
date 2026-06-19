@@ -32,3 +32,20 @@ craq_api_data_pass
 ApiBackend2026$
 
 https://api-backend-solid-5vjoa6gwra-uc.a.run.app/
+
+gcloud sql instances patch api-backend-db \
+  --activation-policy=ALWAYS \
+  --project=api-backend-solid-gcp
+
+curl https://api-backend-solid-5vjoa6gwra-uc.a.run.app/
+
+gcloud sql instances describe api-backend-db \
+  --project=api-backend-solid-gcp \
+  --format="value(state,settings.activationPolicy)"
+
+
+
+//Finish
+gcloud sql instances patch api-backend-db \
+  --activation-policy=NEVER \
+  --project=api-backend-solid-gcp

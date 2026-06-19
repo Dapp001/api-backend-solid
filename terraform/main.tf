@@ -368,3 +368,96 @@ resource "google_api_gateway_gateway" "gateway" {
 
   depends_on = [google_api_gateway_api_config.api_config]
 }
+
+# ─── PUB/SUB ───────────────────────────────────────────────
+
+resource "google_project_service" "pubsub" {
+  project            = var.project_id
+  service            = "pubsub.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_pubsub_topic" "email_topic" {
+  depends_on = [google_project_service.pubsub]
+  name       = var.pubsub_topic_name
+  project    = var.project_id
+}
+
+# ─── CLOUD RUN NOTIFICACIONES ──────────────────────────────
+
+resource "google_cloud_run_v2_service" "notification_service" {
+  depends_on = [
+    google_project_service.services,
+    google_artifact_registry_repository.repo
+  ]
+
+  name     = var.notification_service_name
+  location = var.region
+
+  template {
+    service_account = google_service_account.cloud_run_sa.email
+
+    containers {
+      image = "${var.region}-docker.pkg.dev/${var.project_id}/${var.artifact_registry_name}/${var.notification_service_name}:latest"
+
+      ports {
+        container_port = 8080
+      }
+
+      env {
+        name  = "SMTP_EMAIL"
+        value = var.smtp_email
+      }
+
+      env {
+        name  = "SMTP_PASSWORD"
+        value = var.smtp_password
+      }
+    }
+  }
+
+  traffic {
+    percent = 100
+    type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
+  }
+}
+
+# ─── IAM ───────────────────────────────────────────────────
+
+resource "google_service_account" "pubsub_invoker" {
+  account_id   = "pubsub-invoker-sa"
+  display_name = "Pub/Sub Cloud Run Invoker"
+  project      = var.project_id
+}
+
+resource "google_cloud_run_v2_service_iam_member" "pubsub_invoker_binding" {
+  project  = var.project_id
+  location = var.region
+  name     = google_cloud_run_v2_service.notification_service.name
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:${google_service_account.pubsub_invoker.email}"
+}
+
+resource "google_project_iam_member" "cloud_run_pubsub_publisher" {
+  project = var.project_id
+  role    = "roles/pubsub.publisher"
+  member  = "serviceAccount:${google_service_account.cloud_run_sa.email}"
+}
+
+# ─── SUSCRIPCIÓN PUSH ──────────────────────────────────────
+
+resource "google_pubsub_subscription" "email_subscription" {
+  depends_on = [google_cloud_run_v2_service.notification_service]
+
+  name    = "email-notifications-sub"
+  topic   = google_pubsub_topic.email_topic.name
+  project = var.project_id
+
+  push_config {
+    push_endpoint = "${google_cloud_run_v2_service.notification_service.uri}/pubsub/push"
+
+    oidc_token {
+      service_account_email = google_service_account.pubsub_invoker.email
+    }
+  }
+}
