@@ -109,3 +109,4 @@ jobs:
             --region $REGION \
             --platform managed \
             --allow-unauthenticated
+            --min-instances 0 \ --max-instances 10
