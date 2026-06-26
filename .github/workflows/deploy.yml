@@ -108,4 +108,4 @@ jobs:
             --image $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY/$IMAGE_NAME:latest \
             --region $REGION \
             --platform managed \
-            --allow-unauthenticated 
+            --allow-unauthenticated
