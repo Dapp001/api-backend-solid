@@ -108,6 +108,4 @@ jobs:
             --image $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY/$IMAGE_NAME:latest \
             --region $REGION \
             --platform managed \
-            --allow-unauthenticated \
-            --min-instances 0 \ 
-            --max-instances 10
+            --allow-unauthenticated 
